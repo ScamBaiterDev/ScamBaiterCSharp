@@ -4,24 +4,54 @@ namespace ScamBaiterCSharp.Util;
 
 public class ScamChecking
 {
-    public static async Task<bool> CheckForScamInvites(string text)
+  public static async Task<bool> CheckForScamLinks(string text)
+  {
+    // Regex for HTTP urls getting rid of the protocol and www. part with a group for the root of the domain minus all subdomains
+    var pattern = @"(?:https?:\/\/)?(?:www\.)?((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])";
+
+
+    var match = Regex.Match(text, pattern);
+    if (match.Success)
     {
-        var pattern = @"(?:https?:\/\/)?(?:www\.)?(?:discord\.(?:gg|io|me|li)|discordapp\.com\/invite)\/([\w-]{2,255})";
+      //
+      // Get the domain minus subdomains
+      var domain = match.Groups[1].Value;
+      string[] parts = domain.Split('.');
+      if (parts.Length > 2)
+      {
+        domain = parts[parts.Length - 2] + "." + parts[parts.Length - 1];
+      }
 
-        var match = Regex.Match(text, pattern);
-        if (match.Success)
-        {
-            var invite = match.Groups[1].Value;
-            Console.WriteLine("Handling Invite: " + invite);
-            return await IsInviteBad(invite);
-        }
-
-        return false;
+      Console.WriteLine("Handling URL: " + domain);
+      return await IsUrlBad(domain);
     }
 
-    private static async Task<bool> IsInviteBad(string invite)
+    return false;
+  }
+  public static async Task<bool> CheckForScamInvites(string text)
+  {
+    var pattern = @"(?:https?:\/\/)?(?:www\.)?(?:discord\.(?:gg|io|me|li)|discordapp\.com\/invite)\/([\w-]{2,255})";
+
+    var match = Regex.Match(text, pattern);
+    if (match.Success)
     {
-        var json = await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), "serverdb.json"));
-        return json.Contains(invite);
+      var invite = match.Groups[1].Value;
+      Console.WriteLine("Handling Invite: " + invite);
+      return await IsInviteBad(invite);
     }
+
+    return false;
+  }
+
+  private static async Task<bool> IsUrlBad(string url)
+  {
+    var json = await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), "scamdb.json"));
+    return json.Contains(url);
+  }
+
+  private static async Task<bool> IsInviteBad(string invite)
+  {
+    var json = await File.ReadAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), "serverdb.json"));
+    return json.Contains(invite);
+  }
 }
