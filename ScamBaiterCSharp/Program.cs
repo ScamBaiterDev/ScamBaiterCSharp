@@ -1,8 +1,10 @@
-﻿using DSharpPlus;
+﻿using System.Text;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using ScamBaiterCSharp.Commands;
 using ScamBaiterCSharp.Util;
 
@@ -10,19 +12,9 @@ namespace ScamBaiterCSharp;
 
 public class Program
 {
-    private static readonly IConfigurationRoot _config = new ConfigurationBuilder()
-        .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("config.json", false, true)
-        .Build();
+    private static ScambaiterConfig Config = new ScambaiterConfig();
 
-
-    public static DiscordClient Discord = new(new DiscordConfiguration
-    {
-        Token = _config.GetValue<string>("discord:token"),
-        TokenType = TokenType.Bot,
-        Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents
-    });
-
+    public static DiscordClient Discord { get; private set; }
     public static void Main(string[] args)
     {
         MainAsync().GetAwaiter().GetResult();
@@ -30,6 +22,28 @@ public class Program
 
     private static async Task MainAsync()
     {
+        var json = string.Empty;
+        if (!File.Exists("config.json"))
+        {
+            json = JsonConvert.SerializeObject(Config, Formatting.Indented);
+            File.WriteAllText("config.json", json, new UTF8Encoding(false));
+            Console.WriteLine("Config file was not found, a new one was generated. Fill it with proper values and rerun this program");
+            Console.ReadKey();
+
+            return;
+        }
+
+        json = File.ReadAllText("config.json", new UTF8Encoding(false));
+        Config = JsonConvert.DeserializeObject<ScambaiterConfig>(json);
+        
+        Discord = new(new DiscordConfiguration
+        {
+            Token = Config.Token,
+            TokenType = TokenType.Bot,
+            Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents
+        });
+
+        
         var commands = Discord.UseCommandsNext(new CommandsNextConfiguration
         {
             StringPrefixes = new[] { "$" },
@@ -73,7 +87,7 @@ public class Program
                 await e.Guild.UnbanMemberAsync(e.Author.Id);
             }
 
-            var reportChanel = await Discord.GetChannelAsync(_config.GetValue<ulong>("discord:reportChannel"));
+            var reportChanel = await Discord.GetChannelAsync(Config.ReportChannel);
             Console.WriteLine(reportChanel);
 
             var reportEmbed = new DiscordEmbedBuilder()
