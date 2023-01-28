@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
@@ -78,7 +76,7 @@ namespace ScamBaiterCSharp
                 var reportEmbed = new DiscordEmbedBuilder()
                     .WithAuthor(e.Guild.Name, e.Guild.IconUrl)
                     .WithThumbnail(message.Author.AvatarUrl)
-                    .WithFooter($"{message.Id} softbanned")
+                    .WithFooter($"{message.Id} soft-banned")
                     .AddField("User", $"{message.Author.Username} ({message.Author.Mention})\nID: {message.Author.Id}")
                     .AddField("Message Content", content)
                     .Build();
