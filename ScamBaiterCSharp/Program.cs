@@ -1,13 +1,15 @@
 ﻿using System;
+using System.IO;
+using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Configuration;
-using ScamDetector.Commands;
-using ScamDetector.Util;
+using ScamBaiterCSharp.Commands;
+using ScamBaiterCSharp.Util;
 
-namespace ScamDetector
+namespace ScamBaiterCSharp
 {
     public class Program
     {
@@ -37,6 +39,7 @@ namespace ScamDetector
                 CaseSensitive = false
             });
             commands.RegisterCommands<MiscModule>();
+            commands.RegisterCommands<ScamRelated>();
 
             Discord.MessageCreated += DiscordOnMessageCreated;
             Discord.Ready += DiscordOnReady;

@@ -2,9 +2,9 @@ using System.Runtime.InteropServices;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
-using ScamDetector.Util;
+using ScamBaiterCSharp.Util;
 
-namespace ScamDetector.Commands;
+namespace ScamBaiterCSharp.Commands;
 
 public class MiscModule : BaseCommandModule
 {

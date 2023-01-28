@@ -1,8 +1,9 @@
+using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using ScamDetector.Util;
+using ScamBaiterCSharp.Util;
 
-namespace ScamDetector.Commands;
+namespace ScamBaiterCSharp.Commands;
 
 public class ScamRelated : BaseCommandModule
 {
