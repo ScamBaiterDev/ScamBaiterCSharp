@@ -3,7 +3,6 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using ScamBaiterCSharp.Commands;
@@ -13,9 +12,10 @@ namespace ScamBaiterCSharp;
 
 public class Program
 {
-    private static ScambaiterConfig _config = new ScambaiterConfig();
+    private static ScambaiterConfig _config = new();
 
     private static DiscordClient? Discord { get; set; }
+
     public static void Main(string[] args)
     {
         MainAsync().GetAwaiter().GetResult();
@@ -28,7 +28,8 @@ public class Program
         {
             json = JsonConvert.SerializeObject(_config, Formatting.Indented);
             await File.WriteAllTextAsync("config.json", json, new UTF8Encoding(false));
-            Console.WriteLine("Config file was not found, a new one was generated. Fill it with proper values and rerun this program");
+            Console.WriteLine(
+                "Config file was not found, a new one was generated. Fill it with proper values and rerun this program");
             Console.ReadKey();
 
             return;
@@ -36,8 +37,8 @@ public class Program
 
         json = await File.ReadAllTextAsync("config.json", new UTF8Encoding(false));
         _config = JsonConvert.DeserializeObject<ScambaiterConfig>(json);
-        
-        Discord = new(new DiscordConfiguration
+
+        Discord = new DiscordClient(new DiscordConfiguration
         {
             Token = _config.Token,
             TokenType = TokenType.Bot,
@@ -47,7 +48,7 @@ public class Program
         var services = new ServiceCollection()
             .AddSingleton(_config)
             .BuildServiceProvider();
-        
+
         var commands = Discord.UseCommandsNext(new CommandsNextConfiguration
         {
             StringPrefixes = new[] { "$" },
@@ -59,7 +60,7 @@ public class Program
 
         Discord.MessageCreated += DiscordOnMessageCreated;
         Discord.Ready += DiscordOnReady;
-        
+
         // Start our hourly database updates
         UpdateDatabasePeriodically(TimeSpan.FromHours(1));
 
@@ -70,8 +71,8 @@ public class Program
 
     private static Task DiscordOnReady(DiscordClient sender, ReadyEventArgs e)
     {
-        ScamChecking.UpdateScamDatabase();
-        ScamChecking.UpdateServerDatabase();
+        MiscUtils.UpdateScamDatabase();
+        MiscUtils.UpdateServerDatabase();
 
         return Task.CompletedTask;
     }
