@@ -61,7 +61,7 @@ public class Program
 
         if (await ScamChecking.CheckForScamInvites(content))
         {
-            await message.DeleteAsync();
+            if ((e.Guild.CurrentMember.Permissions & Permissions.ManageMessages) != 0) await message.DeleteAsync();
             if (((e.Guild.CurrentMember.Permissions & Permissions.BanMembers) != 0) & (e.Guild.CurrentMember.Hierarchy >
                     (await e.Guild.GetMemberAsync(e.Author.Id)).Hierarchy))
             {
