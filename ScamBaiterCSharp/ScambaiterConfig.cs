@@ -4,9 +4,9 @@ namespace ScamBaiterCSharp;
 
 public class ScambaiterConfig
 {
-  [JsonProperty("token")] public string Token { get; private set; } = string.Empty;
+    [JsonProperty("token")] public string Token { get; private set; } = string.Empty;
 
-  [JsonProperty("command_prefixes")] public string[] CommandPrefixes { get; private set; } = { "$" };
+    [JsonProperty("command_prefixes")] public string[] CommandPrefixes { get; private set; } = { "$" };
 
-  [JsonProperty("reportChannel")] public ulong ReportChannel { get; private set; }
+    [JsonProperty("reportChannel")] public ulong ReportChannel { get; private set; }
 }
