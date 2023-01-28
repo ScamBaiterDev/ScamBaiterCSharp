@@ -4,6 +4,7 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using ScamBaiterCSharp.Commands;
 using ScamBaiterCSharp.Util;
@@ -14,7 +15,7 @@ public class Program
 {
     private static ScambaiterConfig Config = new ScambaiterConfig();
 
-    public static DiscordClient Discord { get; private set; }
+    private static DiscordClient Discord { get; set; }
     public static void Main(string[] args)
     {
         MainAsync().GetAwaiter().GetResult();
@@ -43,11 +44,15 @@ public class Program
             Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents
         });
 
+        var services = new ServiceCollection()
+            .AddSingleton(Config)
+            .BuildServiceProvider();
         
         var commands = Discord.UseCommandsNext(new CommandsNextConfiguration
         {
             StringPrefixes = new[] { "$" },
-            CaseSensitive = false
+            CaseSensitive = false,
+            Services = services
         });
         commands.RegisterCommands<MiscModule>();
         commands.RegisterCommands<ScamRelated>();
