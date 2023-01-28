@@ -40,6 +40,9 @@ public class Program
 
         Discord.MessageCreated += DiscordOnMessageCreated;
         Discord.Ready += DiscordOnReady;
+        
+        // Start our hourly database updates
+        UpdateDatabasePeriodically(TimeSpan.FromHours(1));
 
         Console.WriteLine("[BOT] Logging in");
         await Discord.ConnectAsync();
@@ -81,6 +84,17 @@ public class Program
                 .AddField("Message Content", content)
                 .Build();
             await reportChanel.SendMessageAsync(reportEmbed);
+        }
+    }
+
+    private static async Task UpdateDatabasePeriodically(TimeSpan timeSpan)
+    {
+        Console.WriteLine("Does this work?");
+        var periodicTimer = new PeriodicTimer(timeSpan);
+        while (await periodicTimer.WaitForNextTickAsync())
+        {
+            ScamChecking.UpdateScamDatabase();
+            ScamChecking.UpdateServerDatabase();
         }
     }
 }

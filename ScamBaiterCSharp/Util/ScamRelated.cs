@@ -7,6 +7,7 @@ public class ScamChecking
 {
     public static async void UpdateScamDatabase()
     {
+        Console.WriteLine("[INFO] Updating Scam DB");
         var client = new HttpClient();
         client.BaseAddress = new Uri("https://phish.sinking.yachts");
         client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("ScamBaiter", "1.0"));
@@ -22,6 +23,8 @@ public class ScamChecking
 
     public static async void UpdateServerDatabase()
     {
+        Console.WriteLine("[INFO] Updating Server DB");
+
         var client = new HttpClient();
         client.BaseAddress = new Uri("https://api.phish.gg");
         client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("ScamBaiter", "1.0"));
