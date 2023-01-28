@@ -89,7 +89,6 @@ public class Program
 
     private static async Task UpdateDatabasePeriodically(TimeSpan timeSpan)
     {
-        Console.WriteLine("Does this work?");
         var periodicTimer = new PeriodicTimer(timeSpan);
         while (await periodicTimer.WaitForNextTickAsync())
         {
