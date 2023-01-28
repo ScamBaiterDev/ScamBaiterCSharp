@@ -1,5 +1,6 @@
 ScamBaiterCSharp/bin/
 ScamBaiterCSharp/obj/
+ScamBaiterCSharp/config.json
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
