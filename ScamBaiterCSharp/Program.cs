@@ -12,7 +12,7 @@ namespace ScamBaiterCSharp;
 
 public class Program
 {
-    private static ScambaiterConfig _config = new();
+    private static readonly ScambaiterConfig _config = new ScambaiterConfig().load("config.json");
 
     private static DiscordClient? Discord { get; set; }
 
@@ -23,21 +23,6 @@ public class Program
 
     private static async Task MainAsync()
     {
-        var json = string.Empty;
-        if (!File.Exists("config.json"))
-        {
-            json = JsonConvert.SerializeObject(_config, Formatting.Indented);
-            await File.WriteAllTextAsync("config.json", json, new UTF8Encoding(false));
-            Console.WriteLine(
-                "Config file was not found, a new one was generated. Fill it with proper values and rerun this program");
-            Console.ReadKey();
-
-            return;
-        }
-
-        json = await File.ReadAllTextAsync("config.json", new UTF8Encoding(false));
-        _config = JsonConvert.DeserializeObject<ScambaiterConfig>(json);
-
         Discord = new DiscordClient(new DiscordConfiguration
         {
             Token = _config.Token,
