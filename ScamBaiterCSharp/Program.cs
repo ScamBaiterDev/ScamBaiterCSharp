@@ -112,8 +112,8 @@ public class Program
         var periodicTimer = new PeriodicTimer(timeSpan);
         while (await periodicTimer.WaitForNextTickAsync())
         {
-            ScamChecking.UpdateScamDatabase();
-            ScamChecking.UpdateServerDatabase();
+            MiscUtils.UpdateScamDatabase();
+            MiscUtils.UpdateServerDatabase();
         }
     }
 }

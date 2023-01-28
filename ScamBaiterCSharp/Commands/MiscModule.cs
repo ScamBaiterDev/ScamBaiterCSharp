@@ -8,12 +8,11 @@ namespace ScamBaiterCSharp.Commands;
 
 public class MiscModule : BaseCommandModule
 {
-    [Command("update_db")]
-    [RequireOwner]
+    [Command("update_db"), RequireOwner]
     public async Task UpdateDbCommand(CommandContext ctx)
     {
-        ScamChecking.UpdateScamDatabase();
-        ScamChecking.UpdateServerDatabase();
+        MiscUtils.UpdateScamDatabase();
+        MiscUtils.UpdateServerDatabase();
 
         await ctx.RespondAsync("Updated Databases");
     }
