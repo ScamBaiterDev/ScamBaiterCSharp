@@ -13,9 +13,9 @@ namespace ScamBaiterCSharp;
 
 public class Program
 {
-    private static ScambaiterConfig Config = new ScambaiterConfig();
+    private static ScambaiterConfig _config = new ScambaiterConfig();
 
-    private static DiscordClient Discord { get; set; }
+    private static DiscordClient? Discord { get; set; }
     public static void Main(string[] args)
     {
         MainAsync().GetAwaiter().GetResult();
@@ -26,26 +26,26 @@ public class Program
         var json = string.Empty;
         if (!File.Exists("config.json"))
         {
-            json = JsonConvert.SerializeObject(Config, Formatting.Indented);
-            File.WriteAllText("config.json", json, new UTF8Encoding(false));
+            json = JsonConvert.SerializeObject(_config, Formatting.Indented);
+            await File.WriteAllTextAsync("config.json", json, new UTF8Encoding(false));
             Console.WriteLine("Config file was not found, a new one was generated. Fill it with proper values and rerun this program");
             Console.ReadKey();
 
             return;
         }
 
-        json = File.ReadAllText("config.json", new UTF8Encoding(false));
-        Config = JsonConvert.DeserializeObject<ScambaiterConfig>(json);
+        json = await File.ReadAllTextAsync("config.json", new UTF8Encoding(false));
+        _config = JsonConvert.DeserializeObject<ScambaiterConfig>(json);
         
         Discord = new(new DiscordConfiguration
         {
-            Token = Config.Token,
+            Token = _config.Token,
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents
         });
 
         var services = new ServiceCollection()
-            .AddSingleton(Config)
+            .AddSingleton(_config)
             .BuildServiceProvider();
         
         var commands = Discord.UseCommandsNext(new CommandsNextConfiguration
@@ -92,7 +92,7 @@ public class Program
                 await e.Guild.UnbanMemberAsync(e.Author.Id);
             }
 
-            var reportChanel = await Discord.GetChannelAsync(Config.ReportChannel);
+            var reportChanel = await Discord.GetChannelAsync(_config.ReportChannel);
             Console.WriteLine(reportChanel);
 
             var reportEmbed = new DiscordEmbedBuilder()
