@@ -6,15 +6,12 @@ public class ScamChecking
 {
   public static async Task<bool> CheckForScamLinks(string text)
   {
-    // Regex for HTTP urls getting rid of the protocol and www. part with a group for the root of the domain minus all subdomains
     var pattern = @"(?:https?:\/\/)?(?:www\.)?((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9])";
 
 
     var match = Regex.Match(text, pattern);
     if (match.Success)
     {
-      //
-      // Get the domain minus subdomains
       var domain = match.Groups[1].Value;
       string[] parts = domain.Split('.');
       if (parts.Length > 2)
