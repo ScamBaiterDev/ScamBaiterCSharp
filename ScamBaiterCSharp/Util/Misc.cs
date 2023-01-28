@@ -1,5 +1,4 @@
 using System.Net.Http.Headers;
-using System.Text.RegularExpressions;
 
 namespace ScamBaiterCSharp.Util;
 
@@ -8,8 +7,10 @@ public class MiscUtils
     public static async void UpdateScamDatabase()
     {
         Console.WriteLine("[INFO] Updating Scam DB");
-        var client = new HttpClient();
-        client.BaseAddress = new Uri("https://phish.sinking.yachts");
+        var client = new HttpClient
+        {
+            BaseAddress = new Uri("https://phish.sinking.yachts")
+        };
         client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("ScamBaiter", "1.0"));
         ;
         var response = await client.GetAsync("/v2/all");
@@ -25,8 +26,10 @@ public class MiscUtils
     {
         Console.WriteLine("[INFO] Updating Server DB");
 
-        var client = new HttpClient();
-        client.BaseAddress = new Uri("https://api.phish.gg");
+        var client = new HttpClient
+        {
+            BaseAddress = new Uri("https://api.phish.gg")
+        };
         client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("ScamBaiter", "1.0"));
         ;
         var response = await client.GetAsync("/servers/all");
@@ -37,6 +40,4 @@ public class MiscUtils
             await File.WriteAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), "serverdb.json"), content);
         }
     }
-
-
 }

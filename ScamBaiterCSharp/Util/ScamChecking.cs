@@ -16,7 +16,7 @@ public class ScamChecking
             string[] parts = domain.Split('.');
             if (parts.Length > 2)
             {
-                domain = parts[parts.Length - 2] + "." + parts[parts.Length - 1];
+                domain = parts[^2] + "." + parts[^1];
             }
 
             Console.WriteLine("Handling URL: " + domain);

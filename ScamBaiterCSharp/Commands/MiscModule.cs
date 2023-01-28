@@ -27,7 +27,7 @@ public class MiscModule : BaseCommandModule
                 // I am incapable of doing the Memory stuff unless we go linux only;( cross platform made me wanna kms
                 $"Hostname: {Dns.GetHostName()}\nTotal Memory: N/A\n Free Memory: N/A")
             .AddField("Bot Info",
-                $"Bot name: {ctx.Client.CurrentUser.Username}\nGuild Count: {ctx.Client.Guilds.Count()}")
+                $"Bot name: {ctx.Client.CurrentUser.Username}\nGuild Count: {ctx.Client.Guilds.Count}")
             .Build();
 
         await ctx.RespondAsync(embed);
